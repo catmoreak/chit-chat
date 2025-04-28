@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-const Home : React.FC = () => {
+const Home: React.FC = () => {
   return (
-    <div>
-      Home page
+    <div style={{ textAlign: 'center', marginTop: '150px' }}>
+      <h1>HomePage</h1>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
