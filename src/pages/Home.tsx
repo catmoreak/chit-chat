@@ -1,9 +1,12 @@
 import React from 'react';
+import HeroSection from '../components/HeroSection';
+import CardSection from '../components/CardSection';
 
 const Home: React.FC = () => {
   return (
-    <div style={{ textAlign: 'center', marginTop: '150px' }}>
-      <h1 color='red'>HomePage</h1>
+    <div className="home-page">
+      <HeroSection />
+      <CardSection/>
     </div>
   );
 };
