@@ -7,7 +7,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #2ac5eb; /* clean white background */
+    background: #0790eb; /* clean white background */
     padding: 15px 30px;
     color: #0910ca; /* messenger blue text/icons */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* softer shadow */
@@ -44,5 +44,5 @@
 }
 
 .navbar-link:hover {
-  color: #002fff;
+  color: #5213f1;
 }
