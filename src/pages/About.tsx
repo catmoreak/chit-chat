@@ -36,7 +36,7 @@ export default function About() {
     if (statsInView) {
       const interval = setInterval(() => {
         setStats((prev) => {
-          const newUsers = Math.min(prev.users + 1000, 50)
+          const newUsers = Math.min(prev.users + 1000, 5000)
           const newMessages = Math.min(prev.messages + 5000, 250000)
           const newCountries = Math.min(prev.countries + 5, 120)
 
