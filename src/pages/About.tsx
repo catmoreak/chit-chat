@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion"
+import { motion, useScroll, useTransform,  useInView } from "framer-motion"
 import { MessageSquare, Users, Shield, Zap, Github, Linkedin, Mail, Star, Globe, Award } from 'lucide-react'
 import "./about.css"
 
