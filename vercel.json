@@ -1,8 +1,8 @@
 {
-    "routes": [
+    "rewrites": [
       {
-        "src": "/about",
-        "dest": "/src/pages/About.tsx"
+        "source": "/:path*",
+        "destination": "/index.html"
       }
     ]
   }
