@@ -320,136 +320,196 @@ export default function About() {
       </section>
 
       {/* Team Section with 3D card effect */}
-      <section className="team-section" ref={teamRef}>
+      
+<section className="team-section" ref={teamRef}>
+  <motion.div
+    className="section-header"
+    initial={{ opacity: 0, y: 30 }}
+    animate={teamInView ? { opacity: 1, y: 0 } : {}}
+    transition={{ duration: 0.6 }}
+  >
+    <h2>Meet the Creators</h2>
+    <p>The minds behind Chit-Chat</p>
+  </motion.div>
+
+  <div
+    className="creator-profiles"
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "2rem",
+      justifyContent: "center",
+    }}
+  >
+    {/* First Creator Profile */}
+    <motion.div
+      className="creator-profile"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={teamInView ? { opacity: 1, scale: 1 } : {}}
+      transition={{ duration: 0.8, delay: 0.3 }}
+      whileHover={{ boxShadow: "0 30px 60px rgba(42, 197, 235, 0.3)" }}
+    >
+      <div className="creator-image">
         <motion.div
-          className="section-header"
-          initial={{ opacity: 0, y: 30 }}
+          className="creator-avatar"
+          animate={{
+            boxShadow: [
+              "0 0 20px rgba(42, 197, 235, 0.5)",
+              "0 0 40px rgba(42, 197, 235, 0.8)",
+              "0 0 20px rgba(42, 197, 235, 0.5)",
+            ],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          SD
+        </motion.div>
+        <motion.div
+          className="creator-glow"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.6, 0.3],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </div>
+      <div className="creator-info">
+        <motion.h3
+          initial={{ opacity: 0, y: 20 }}
           animate={teamInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
         >
-          <h2>Meet the Creator</h2>
-          <p>The mind behind Chit-Chat</p>
-        </motion.div>
-
+          Sujnan D Devadiga
+        </motion.h3>
+        <motion.p
+          className="creator-title"
+          initial={{ opacity: 0, y: 20 }}
+          animate={teamInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          Full Stack Developer &amp; Founder
+        </motion.p>
+        <motion.p
+          className="creator-bio"
+          initial={{ opacity: 0, y: 20 }}
+          animate={teamInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.7 }}
+        >
+          A sophomore at NMAM Institute of Technology with a passion for creating innovative solutions.
+        </motion.p>
         <motion.div
-          className="creator-profile"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={teamInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          whileHover={{ boxShadow: "0 30px 60px rgba(42, 197, 235, 0.3)" }}
+          className="creator-social"
+          initial={{ opacity: 0, y: 20 }}
+          animate={teamInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.9 }}
         >
-          <div className="creator-image">
-            <motion.div 
-              className="creator-avatar"
-              animate={{ 
-                boxShadow: [
-                  "0 0 20px rgba(42, 197, 235, 0.5)", 
-                  "0 0 40px rgba(42, 197, 235, 0.8)", 
-                  "0 0 20px rgba(42, 197, 235, 0.5)"
-                ]
-              }}
-              transition={{ 
-                duration: 3, 
-                repeat: Infinity,
-                ease: "easeInOut" 
-              }}
-            >
-              SD
-            </motion.div>
-            <motion.div 
-              className="creator-glow"
-              animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.6, 0.3]
-              }}
-              transition={{ 
-                duration: 3, 
-                repeat: Infinity,
-                ease: "easeInOut" 
-              }}
-            />
-          </div>
-
-          <div className="creator-info">
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              animate={teamInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              Sujnan D Devadiga
-            </motion.h3>
-            <motion.p 
-              className="creator-title"
-              initial={{ opacity: 0, y: 20 }}
-              animate={teamInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              Full Stack Developer & Founder
-            </motion.p>
-            <motion.p 
-              className="creator-bio"
-              initial={{ opacity: 0, y: 20 }}
-              animate={teamInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.7 }}
-            >
-              A sophomore at NMAM Institute of Technology with a passion for creating innovative solutions that connect
-              people. Sujnan specializes in real-time applications and modern web technologies, with Chit-Chat being his
-              flagship project.
-            </motion.p>
-
-            <motion.div 
-              className="creator-skills"
-              initial={{ opacity: 0, y: 20 }}
-              animate={teamInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.8 }}
-            >
-              {["React", "Supabase", "TypeScript", "UI/UX", "Real-time Systems"].map((skill, index) => (
-                <motion.span 
-                  key={index} 
-                  className="skill-tag"
-                  whileHover={{ 
-                    scale: 1.1, 
-                    backgroundColor: "rgba(42, 197, 235, 0.4)",
-                    color: "#ffffff" 
-                  }}
-                >
-                  {skill}
-                </motion.span>
-              ))}
-            </motion.div>
-
-            <motion.div 
-              className="creator-social"
-              initial={{ opacity: 0, y: 20 }}
-              animate={teamInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.9 }}
-            >
-              {[
-                { icon: <Github size={20} />, delay: 0 },
-                { icon: <Linkedin size={20} />, delay: 0.1 },
-                { icon: <Mail size={20} />, delay: 0.2 }
-              ].map((item, index) => (
-                <motion.a 
-                  key={index} 
-                  href="#" 
-                  className="social-link"
-                  whileHover={{ 
-                    y: -8, 
-                    backgroundColor: "rgba(42, 197, 235, 1)",
-                    rotate: [0, -10, 10, -5, 5, 0],
-                    transition: { duration: 0.5 }
-                  }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={teamInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.4, delay: 1 + item.delay }}
-                >
-                  {item.icon}
-                </motion.a>
-              ))}
-            </motion.div>
-          </div>
+          <motion.a
+            href="#"
+            className="social-link"
+            whileHover={{ y: -8 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={teamInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.4, delay: 1 }}
+          >
+            <Linkedin size={20} />
+          </motion.a>
+          {/* ...other social links if any... */}
         </motion.div>
-      </section>
+      </div>
+    </motion.div>
+
+    {/* Second Creator Profile */}
+    <motion.div
+      className="creator-profile"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={teamInView ? { opacity: 1, scale: 1 } : {}}
+      transition={{ duration: 0.8, delay: 0.5 }}
+      whileHover={{ boxShadow: "0 30px 60px rgba(42, 197, 235, 0.3)" }}
+    >
+      <div className="creator-image">
+        <motion.div
+          className="creator-avatar"
+          animate={{
+            boxShadow: [
+              "0 0 20px rgba(42, 197, 235, 0.5)",
+              "0 0 40px rgba(42, 197, 235, 0.8)",
+              "0 0 20px rgba(42, 197, 235, 0.5)",
+            ],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          A
+        </motion.div>
+        <motion.div
+          className="creator-glow"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.6, 0.3],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </div>
+      <div className="creator-info">
+        <motion.h3
+          initial={{ opacity: 0, y: 20 }}
+          animate={teamInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.7 }}
+        >
+          Ananya
+        </motion.h3>
+        <motion.p
+          className="creator-title"
+          initial={{ opacity: 0, y: 20 }}
+          animate={teamInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          Frontend Developer
+        </motion.p>
+        <motion.p
+          className="creator-bio"
+          initial={{ opacity: 0, y: 20 }}
+          animate={teamInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.9 }}
+        >
+          Passionate about crafting intuitive user experiences with a keen eye for design.
+        </motion.p>
+        <motion.div
+          className="creator-social"
+          initial={{ opacity: 0, y: 20 }}
+          animate={teamInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 1.1 }}
+        >
+          <motion.a
+            href="#"
+            className="social-link"
+            whileHover={{ y: -8 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={teamInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.4, delay: 1.2 }}
+          >
+            <Linkedin size={20} />
+          </motion.a>
+          {/* ...other social links for Jane if necessary... */}
+        </motion.div>
+      </div>
+    </motion.div>
+  </div>
+</section>
 
       {/* CTA Section with reveal animation */}
       <section className="cta-section" ref={ctaRef}>
