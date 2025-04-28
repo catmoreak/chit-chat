@@ -411,7 +411,7 @@ export default function About() {
           transition={{ duration: 0.6, delay: 0.9 }}
         >
           <motion.a
-            href="#"
+            href="https://www.linkedin.com/in/sujnanddevadiga/"
             className="social-link"
             whileHover={{ y: -8 }}
             initial={{ opacity: 0, y: 20 }}
@@ -502,7 +502,7 @@ export default function About() {
             animate={teamInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.4, delay: 1.2 }}
           >
-            <Linkedin size={20} />
+            <Linkedin  size={20} />
           </motion.a>
           {/* ...other social links for Jane if necessary... */}
         </motion.div>
