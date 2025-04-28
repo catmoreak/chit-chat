@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { motion, useScroll, useTransform,  useInView } from "framer-motion"
 import { MessageSquare, Users, Shield, Zap, Github, Linkedin, Mail, Star, Globe, Award } from 'lucide-react'
-import "./about.css"
+import './About.css'
 
 export default function About() {
   // References for section animations
