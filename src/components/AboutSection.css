@@ -1,0 +1,81 @@
+.about-section {
+    background-color: #000021;
+    padding: 80px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .about-content {
+    max-width: 800px;
+    color: white;
+  }
+  
+  /* Typing animation */
+  .typing-animation {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #000080, #4682b4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    overflow: hidden;
+    white-space: nowrap;
+    /* ✅ Cursor hidden */
+    border-right: none;
+    animation: none;
+    margin-bottom: 20px;
+  }
+  
+  /* Fade and Blur Animation */
+  .fade-in-blur {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(8px);
+    animation: fadeInBlur 2s ease forwards;
+    animation-delay: 1.5s; /* Wait until typing finishes */
+  }
+  
+  @keyframes fadeInBlur {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+  
+  /* Paragraph and Button will fade in */
+  .about-content p,
+  .about-btn {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: rgba(255, 255, 255, 0.8);
+    
+    /* Same fade animation for both */
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(8px);
+    animation: fadeInBlur 2s ease forwards;
+    animation-delay: 1.5s; /* Wait after typing */
+  }
+  
+  /* Button Styling */
+  .about-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    font-size: 1rem;
+    color: white;
+    background: linear-gradient(135deg, #000080, #4682b4);
+    border: none;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .about-btn:hover {
+    background: linear-gradient(135deg, #4682b4, #000080);
+    transform: translateY(-5px);
+    color: white;
+  }
+  

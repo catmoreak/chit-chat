@@ -1,60 +1,63 @@
+.hero-wrapper {
+    min-height: 100vh;
+    width: 100%;
+    background: radial-gradient(circle, #04355d, #000021); /* Only applied here */
+}
+
 /* Hero Section */
 .hero-section {
-    min-height: 100vh;
+    min-height: 100vh; /* Full viewport height */
     display: flex;
-    align-items: center; /* Vertically center */
-    justify-content: center; /* Horizontally center */
-    padding: 0 10%; /* Symmetrical padding on both sides */
+    align-items: center;
+    justify-content: center;
+    padding: 0 10%;
     position: relative;
     z-index: 2;
     overflow: hidden;
-    background: var(--bg-gradient); /* Gradient background */
+    background: radial-gradient(135deg, #000080, #4682b4); /* Gradient from navy blue to light navy blue */
 }
-  
+
 .hero-image {
-    flex-shrink: 0; /* Prevents shrinking of the image */
+    flex-shrink: 0;
 }
-  
+
 .hero-image img {
     max-width: 100%;
     height: 500px;
+    width: 700px;
+    margin-top: 20px;
 }
-  
-.hero-content {
-    text-align: center; /* Center the content */
-    max-width: 700px; /* Adjusted max-width for better layout */
+
+.hero-section-content {
+    text-align: center;
+    max-width: 800px;
     z-index: 1;
-    padding: 0 1rem; /* Added padding for better space management */
-    margin-right: 130px;
+    padding: 0 1rem;
+    margin-right: 120px;
 }
-  
-.hero-title {
-    font-size: 5rem;
+
+.hero-section-content h1 {
+    padding: 5px;
+    font-size: 4rem; /* Increased font size */
     font-weight: 800;
-    margin: 0 0 1.5rem 0; /* Reduced margin-bottom for equal spacing */
-    background: linear-gradient(135deg, var(--primary), var(--secondary)); /* Gradient for the title */
+    margin: 20px 0 1.5rem 0;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     line-height: 1.1;
     position: relative;
+    white-space: nowrap; /* <-- This forces the text to stay in one line */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Optional: if the container is too small, it will show '...' */
 }
-  
-.hero-title::after {
-    content: "";
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    width: 100px;
-    height: 4px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary)); /* Same gradient for the underline */
-    border-radius: 2px;
-}
-  
-.hero-subtitle {
-    font-size: 2rem;
-    font-weight: 600;
-    margin: 0 0 1.5rem 0; /* Adjusted margin for consistent spacing */
+
+
+.hero-section-content p {
+    padding: 15px;
+    font-size: 1.1rem;
+    font-weight: 200;
+    margin: 0 0 1.5rem 0;
     color: white;
     height: 2.4rem;
     display: flex;
@@ -66,9 +69,9 @@
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin-top: 10px; /* Added margin-top for 10px gap between subtitle and buttons */
+    margin-top: 10px;
 }
-  
+
 .btn {
     display: inline-block;
     padding: 0.8rem 2rem;
@@ -77,66 +80,38 @@
     text-decoration: none;
     transition: all 0.3s ease;
 }
-  
+
 .btn-primary {
     background: var(--primary);
     color: var(--secondary);
     border: none;
     box-shadow: 0 4px 15px rgba(42, 197, 235, 0.3);
 }
-  
+
 .btn-primary:hover {
     background: var(--primary-dark);
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(42, 197, 235, 0.4);
 }
-  
+
 .btn-secondary {
     background: transparent;
     color: white;
     border: 2px solid var(--primary);
 }
-  
+
 .btn-secondary:hover {
     background: rgba(42, 197, 235, 0.1);
     transform: translateY(-3px);
 }
-  
+
 .btn-outline {
     background: transparent;
     color: white;
     border: 2px solid white;
 }
-  
+
 .btn-outline:hover {
     background: rgba(255, 255, 255, 0.1);
     transform: translateY(-3px);
-}
-  
-/* Animated background */
-.animated-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 50%, rgba(42, 197, 235, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(9, 16, 202, 0.1) 0%, transparent 40%);
-    z-index: 0;
-    pointer-events: none;
-    animation: animate-bg 5s infinite ease-in-out; /* Animation added for dynamic effect */
-}
-  
-@keyframes animate-bg {
-    0% {
-      transform: translateY(0) translateX(0);
-      opacity: 0.3;
-    }
-    50% {
-      opacity: 0.5;
-    }
-    100% {
-      transform: translateY(-100vh) translateX(50px);
-      opacity: 0.3;
-    }
 }

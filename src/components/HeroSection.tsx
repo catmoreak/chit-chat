@@ -1,23 +1,47 @@
 import React from 'react';
-import './HeroSection.css'; // Import the CSS file
+import { motion } from 'framer-motion'; // Import motion from framer-motion
+import './HeroSection.css';
 
 const HeroSection: React.FC = () => {
   return (
-    <div className="hero-section">
-      <div className="animated-background"></div> {/* Animated background */}
+    <div className="hero-wrapper">
+      <div className="hero-section">
+        {/* Left side for the image */}
+        <div className="hero-image">
+          <img src="hero-img1.gif" alt="Hero" />
+        </div>
 
-      {/* Left side for the image */}
-      <div className="hero-image">
-        <img src="hero-img1.gif" alt="Hero Image" />
-      </div>
+        {/* Right side for the text */}
+        <div className="hero-section-content">
+          {/* Animated Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: -50 }} // Start with opacity 0 and above the element
+            animate={{ opacity: 1, y: 0 }} // Animate to full opacity and normal position
+            transition={{ duration: 1.5 }} // Duration of the animation
+          >
+            Welcome To Chit-Chat
+          </motion.h1>
 
-      {/* Right side for the text */}
-      <div className="hero-content">
-        <h1 style={{padding:"10px"}}>Welcome To Chit-Chat</h1>
-        <p style={{padding:"15px"}}>Connect with friends and new people across the world in real-time, securely.</p>
-        <div className="hero-buttons">
-          <button className="btn-primary">Start Chatting</button>
-          <button className="btn-secondary">Explore Features</button>
+          {/* Animated Description */}
+          <motion.p
+            initial={{ opacity: 0, y: -30 }} // Start with opacity 0 and slightly above
+            animate={{ opacity: 1, y: 0 }} // Animate to full opacity and normal position
+            transition={{ duration: 1.5, delay: 0.5 }} // Added delay for description
+          >
+            Building secure, seamless connections — anytime, anywhere.
+          </motion.p>
+
+          {/* Buttons with animation */}
+          <div className="hero-buttons">
+            <motion.button
+              className="btn-primary"
+              initial={{ opacity: 0, y: 30 }} // Start with opacity 0 and below the element
+              animate={{ opacity: 1, y: 0 }} // Animate to full opacity and normal position
+              transition={{ duration: 1.5, delay: 1 }} // Delay for button animation
+            >
+              Start Chatting
+            </motion.button>
+          </div>
         </div>
       </div>
     </div>
