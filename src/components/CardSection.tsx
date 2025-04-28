@@ -7,7 +7,7 @@ const CardSection: React.FC = () => {
     {
       title: "Instant messaging",
       icon: <FaPaperPlane />,
-      description: "Experience real-time messaging with instant send and receive features."
+      description: "Experiences real-time messaging with instant send and receive features."
     },
     {
       title: "Create group chats",
