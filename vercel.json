@@ -1,0 +1,9 @@
+{
+    "routes": [
+      {
+        "src": "/about",
+        "dest": "/src/pages/About.tsx"
+      }
+    ]
+  }
+  
