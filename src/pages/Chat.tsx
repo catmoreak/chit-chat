@@ -93,7 +93,7 @@ const Chat: React.FC = () => {
             borderRadius: '3px',
           }}
         >
-          Send
+          Send !
         </button>
       </div>
     </div>
