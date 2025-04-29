@@ -55,7 +55,7 @@ const Contact: React.FC = () => {
       <div className="contact-card">
         <div className="contact-left">
           <img 
-            src="/Contact-img.gif"
+            src="/support.png"
             alt="Paper Plane" 
             className="plane-icon" 
             style={{ width: "400px", height: "500px", maxHeight: "310px", objectFit: "cover" }}
