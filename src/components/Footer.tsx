@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h3>Chit-Chat</h3>
+          <h2>Chit-Chat</h2>
           <p>Redefining communication</p>
         </motion.div>
 

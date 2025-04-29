@@ -25,10 +25,10 @@
     flex: 1;
   }
   
-  .footer-logo-area h3 {
+  .footer-logo-area h2 {
     font-size: 2rem;
     margin-bottom: 1rem;
-    background: linear-gradient(to right, #000080, #4682b4); /* Gradient color for logo */
+    background: linear-gradient(to right, #075ae0, #4682b4); /* Gradient color for logo */
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -42,7 +42,7 @@
     flex: 2;
   }
   
-  .footer-column-area h4 {
+  .footer-column-area h2 {
     font-size: 1.2rem;
     margin-bottom: 1.5rem;
     color: white;

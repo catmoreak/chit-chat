@@ -1,14 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion'; // Import motion from framer-motion
 import './HeroSection.css';
-
+import { Link } from 'react-router-dom';
 const HeroSection: React.FC = () => {
   return (
     <div className="hero-wrapper">
       <div className="hero-section">
         {/* Left side for the image */}
         <div className="hero-image">
-          <img src="hero-img1.gif" alt="Hero" />
+          <img src="hero-img1.gif" alt="Hero" onContextMenu={(e) => e.preventDefault()} 
+  draggable="false"/>
         </div>
 
         {/* Right side for the text */}
@@ -33,6 +34,7 @@ const HeroSection: React.FC = () => {
 
           {/* Buttons with animation */}
           <div className="hero-buttons">
+          <Link to="/chat">
             <motion.button
               className="btn-primary"
               initial={{ opacity: 0, y: 30 }} // Start with opacity 0 and below the element
@@ -41,6 +43,7 @@ const HeroSection: React.FC = () => {
             >
               Start Chatting
             </motion.button>
+            </Link>
           </div>
         </div>
       </div>

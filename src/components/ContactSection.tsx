@@ -33,7 +33,8 @@ const ContactSection: React.FC = () => {
         transition={{ duration: 2 }}  // Slow down the animation duration
         viewport={{ once: true }} // Trigger animation only once when in view
       >
-        <img src="Contact-Homeimg.gif" alt="Contact Us" />
+        <img src="Contact-Homeimg.gif" alt="Contact Us"  onContextMenu={(e) => e.preventDefault()} 
+  draggable="false"/>
       </motion.div>
     </section>
   );
