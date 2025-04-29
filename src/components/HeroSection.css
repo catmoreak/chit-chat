@@ -23,9 +23,11 @@
 
 .hero-image img {
     max-width: 100%;
-    height: 500px;
-    width: 700px;
-    margin-top: 20px;
+    height: 700px;
+    width:700px;
+    border-radius: 50%; 
+    /* border: 2px solid white; */
+    margin-top: -70px;
 }
 
 .hero-section-content {

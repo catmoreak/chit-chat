@@ -8,7 +8,7 @@ const HeroSection: React.FC = () => {
       <div className="hero-section">
         {/* Left side for the image */}
         <div className="hero-image">
-          <img src="hero-img1.gif" alt="Hero" onContextMenu={(e) => e.preventDefault()} 
+          <img src="hero-img3.gif" alt="Hero" onContextMenu={(e) => e.preventDefault()} 
   draggable="false"/>
         </div>
 
