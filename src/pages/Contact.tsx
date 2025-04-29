@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Contact.css";
 import { FaUser, FaEnvelope } from "react-icons/fa";
+import { motion } from "framer-motion"; // Import framer-motion
 
 const Contact: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -17,16 +18,14 @@ const Contact: React.FC = () => {
       return;
     }
 
-    // Gather form data
     const formData = {
       name,
       email,
       message,
-      access_key: import.meta.env.VITE_API_KEY, // Access API key from Vite env variable
+      access_key: import.meta.env.VITE_API_KEY,
     };
 
     try {
-      // Make API request to Web3Forms
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
@@ -54,13 +53,22 @@ const Contact: React.FC = () => {
     <div className="contact-wrapper">
       <div className="contact-card">
         <div className="contact-left">
-          <img 
+          {/* Animate the image */}
+          <motion.img
             src="/support.png"
-            alt="Paper Plane" 
-            className="plane-icon" 
-            style={{ width: "400px", height: "500px", maxHeight: "310px", objectFit: "cover" }}
-            onContextMenu={(e) => e.preventDefault()} 
-  draggable="false"
+            alt="Paper Plane"
+            className="plane-icon"
+            style={{
+              width: "400px",
+              height: "500px",
+              maxHeight: "310px",
+              objectFit: "cover",
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+            draggable="false"
+            initial={{ y: 0 }}
+            animate={{ y: [0, -20, 0] }} // Floating animation
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
         <div className="contact-right">
@@ -97,9 +105,7 @@ const Contact: React.FC = () => {
           </form>
 
           {submitted && (
-            <div className="success-box">
-              ✅ Submitted successfully!
-            </div>
+            <div className="success-box">✅ Submitted successfully!</div>
           )}
         </div>
       </div>
