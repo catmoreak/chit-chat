@@ -1,0 +1,44 @@
+.falling-stars,
+.extra-falling-stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Base star style for both overlays */
+.falling-stars .star,
+.extra-falling-stars .star {
+  position: absolute;
+  top: -10%;
+  width: 5px;
+  height: 5px;
+  background: rgb(255, 255, 255);
+  opacity: 0.8;
+  animation-name: fall;
+  animation-timing-function: linear;
+  pointer-events: none;
+}
+
+/* Falling stars loop continuously */
+.falling-stars .star {
+  animation-iteration-count: infinite;
+}
+
+/* Extra falling stars play animation once per hover */
+.extra-falling-stars .star {
+  animation-iteration-count: 1;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) translateX(-50vw); /* Start from far left */
+  }
+  100% {
+    transform: translateY(150vh) translateX(50vw); /* Move to the right */
+  }
+}
