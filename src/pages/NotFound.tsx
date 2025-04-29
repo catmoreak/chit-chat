@@ -99,7 +99,7 @@ const NotFound: React.FC = () => {
         transition={{ duration: 1, delay: 0.5 }}
         style={{ marginBottom: '1.5rem', fontSize: '1.2rem', zIndex: 1 }}
       >
-        Looks like you are lost in space
+       <strong>Looks like you are lost in space</strong> 
       </motion.p>
       <motion.button
         onClick={() => navigate(-1)}
