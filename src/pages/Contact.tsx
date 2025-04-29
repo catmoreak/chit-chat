@@ -59,6 +59,8 @@ const Contact: React.FC = () => {
             alt="Paper Plane" 
             className="plane-icon" 
             style={{ width: "400px", height: "500px", maxHeight: "310px", objectFit: "cover" }}
+            onContextMenu={(e) => e.preventDefault()} 
+  draggable="false"
           />
         </div>
         <div className="contact-right">
