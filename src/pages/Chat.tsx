@@ -8,18 +8,21 @@ import { MessageSquare, Send, LogOut, ImportIcon as Translate, User, ChevronDown
 
 
 // Initialize Supabase client
-const supabaseUrl = "https://ucxdplxvriuaoxenajyo.supabase.co"
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjeGRwbHh2cml1YW94ZW5hanlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2ODY2MzYsImV4cCI6MjA2MTI2MjYzNn0.4_pqAp4KTr_c8wdaHVa4VxWtn8yVKCZYzB1qfviXWR4"
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey)
 
+
+
+
+
 // Sarvam API key for translation
-const SARVAM_API_KEY = "3add717e-83ac-457f-8711-a6b8222a2d61"
+const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY;
+
 
 // IBM Watson NLU API credentials
-const IBM_API_KEY = "T1Gt0aKmG_Mudw7OjUlHiPaRTyqZQA86Sj-838qh8XaM"
-const IBM_URL =
-  "https://api.au-syd.natural-language-understanding.watson.cloud.ibm.com/instances/28e80c41-2d07-4c66-8a2a-cfa1fdcff321"
+const IBM_API_KEY = import.meta.env.VITE_IBM_API_KEY;
+const IBM_URL = import.meta.env.VITE_IBM_URL;
 
 type Message = {
   id: number
