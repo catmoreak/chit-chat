@@ -303,6 +303,7 @@
     flex-direction: column;
     background-color: rgba(15, 23, 42, 0.5);
     backdrop-filter: blur(10px);
+    padding-top: 70px; /* Add padding to account for the navbar height */
   }
   
   .chat-header {
