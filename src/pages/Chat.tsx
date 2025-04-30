@@ -276,7 +276,7 @@ export default function Chat() {
       <div className="login-container">
         <div className="login-card">
           <div className="login-logo">
-            <MessageSquare size={40} />
+            <Send size={40} />
             <h1>ChitChat</h1>
           </div>
           <p>Sign in with magic link to start chatting</p>
