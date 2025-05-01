@@ -15,3 +15,7 @@ export type Message = {
   content: string;
   username: string;
 };
+
+export type AuthError = {
+  message: string;
+};

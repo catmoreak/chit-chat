@@ -1,25 +1,40 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { format } from 'date-fns';
-import { Send, User, RefreshCw } from 'lucide-react';
+import { Send, User, RefreshCw, Mail } from 'lucide-react';
 import { supabase, type Message } from '../lib/supabase';
 import './Chat.css';
 
 const Chat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
+  const [email, setEmail] = useState('');
   const [username, setUsername] = useState(() => {
     return localStorage.getItem('chitchat-username') || '';
   });
-  const [isUsernameSet, setIsUsernameSet] = useState(!!username);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch messages and subscribe to changes
   useEffect(() => {
-    if (!isUsernameSet) return;
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+      if (session?.user) {
+        setEmail(session.user.email || '');
+        setUsername(session.user.email?.split('@')[0] || '');
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
     
     const fetchMessages = async () => {
       try {
@@ -48,7 +63,6 @@ const Chat: React.FC = () => {
 
     fetchMessages();
 
-    // Subscribe to new messages
     const subscription = supabase
       .channel('messages-channel')
       .on('postgres_changes', { 
@@ -65,7 +79,7 @@ const Chat: React.FC = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [isUsernameSet]);
+  }, [isAuthenticated]);
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -76,7 +90,7 @@ const Chat: React.FC = () => {
   const handleSendMessage = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     
-    if (!newMessage.trim() || !username) return;
+    if (!newMessage.trim() || !username || !isAuthenticated) return;
     
     try {
       const { error } = await supabase
@@ -103,12 +117,31 @@ const Chat: React.FC = () => {
     }
   };
 
-  const handleSetUsername = (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username.trim()) {
-      localStorage.setItem('chitchat-username', username);
-      setIsUsernameSet(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.origin,
+        },
+      });
+
+      if (error) {
+        setAuthError(error.message);
+      } else {
+        setAuthError('Check your email for the magic link!');
+      }
+    } catch (err) {
+      setAuthError('Failed to send magic link. Please try again.');
     }
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setIsAuthenticated(false);
+    setEmail('');
+    setUsername('');
   };
 
   const formatTime = (timestamp: string) => {
@@ -119,28 +152,28 @@ const Chat: React.FC = () => {
     }
   };
 
-  if (!isUsernameSet) {
+  if (!isAuthenticated) {
     return (
-      <div className="username-container">
-        <div className="username-card">
+      <div className="auth-container">
+        <div className="auth-card">
           <h1>Welcome to Chit-Chat</h1>
-          <p>Choose a username to start chatting</p>
+          <p>Sign in with your email to start chatting</p>
           
-          <form onSubmit={handleSetUsername} className="username-form">
+          <form onSubmit={handleSignIn} className="auth-form">
             <div className="input-group">
-              <User size={18} />
+              <Mail size={18} />
               <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Your username"
-                maxLength={20}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Your email"
                 required
                 autoFocus
               />
             </div>
+            {authError && <div className="auth-error">{authError}</div>}
             <button type="submit" className="primary-button">
-              Start Chatting
+              Send Magic Link
             </button>
           </form>
         </div>
@@ -152,9 +185,14 @@ const Chat: React.FC = () => {
     <div className="chat-container">
       <div className="chat-header">
         <h1>Chit-Chat</h1>
-        <div className="username-display">
-          <User size={16} />
-          <span>{username}</span>
+        <div className="user-controls">
+          <div className="username-display">
+            <User size={16} />
+            <span>{username}</span>
+          </div>
+          <button onClick={handleSignOut} className="sign-out-button">
+            Sign Out
+          </button>
         </div>
       </div>
 
