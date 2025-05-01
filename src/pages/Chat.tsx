@@ -1,421 +1,220 @@
-"use client"
+import React, { useEffect, useState, useRef } from 'react';
+import { format } from 'date-fns';
+import { Send, User, RefreshCw } from 'lucide-react';
+import { supabase, type Message } from '../lib/supabase';
+import './Chat.css';
 
-import type React from "react"
-import "./Chat.css"
-import { useEffect, useState, useRef } from "react"
-import { createClient } from "@supabase/supabase-js"
-import { MessageSquare, Send, LogOut, ImportIcon as Translate, User, ChevronDown } from "lucide-react"
+const Chat: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [username, setUsername] = useState(() => {
+    return localStorage.getItem('chitchat-username') || '';
+  });
+  const [isUsernameSet, setIsUsernameSet] = useState(!!username);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-
-// Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey)
-
-
-
-
-
-// Sarvam API key for translation
-const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY;
-
-
-// IBM Watson NLU API credentials
-const IBM_API_KEY = import.meta.env.VITE_IBM_API_KEY;
-const IBM_URL = import.meta.env.VITE_IBM_URL;
-
-type Message = {
-  id: number
-  created_at: string
-  content: string
-  username: string
-  sentiment?: "happy" | "dull" | "angry"
-  translatedContent?: string
-}
-
-export default function Chat() {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [newMessage, setNewMessage] = useState("")
-  const [user, setUser] = useState<any>(null)
-  const [email, setEmail] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [selectedLanguage, setSelectedLanguage] = useState("hindi")
-  const [isTranslating, setIsTranslating] = useState<number | null>(null)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
-
-  // Check if user is already logged in
+  // Fetch messages and subscribe to changes
   useEffect(() => {
-    const checkUser = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
-      setUser(session?.user || null)
-
-      // Set up auth state listener
-      const {
-        data: { subscription },
-      } = await supabase.auth.onAuthStateChange((_event, session) => {
-        setUser(session?.user || null)
-      })
-
-      return () => {
-        subscription.unsubscribe()
-      }
-    }
-
-    checkUser()
-  }, [])
-
-  // Fetch messages when user is authenticated
-  useEffect(() => {
-    if (user) {
-      fetchMessages()
-
-      // Subscribe to new messages
-      const subscription = supabase
-        .channel("public:messages")
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "messages",
-          },
-          (payload) => {
-            const newMessage = payload.new as Message
-            analyzeSentiment(newMessage).then((messageWithSentiment) => {
-              setMessages((prev) => [...prev, messageWithSentiment])
-            })
-          },
-        )
-        .subscribe()
-
-      return () => {
-        supabase.removeChannel(subscription)
-      }
-    }
-  }, [user])
-
-  // Scroll to bottom when messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
-
-  const fetchMessages = async () => {
-    const { data, error } = await supabase.from("messages").select("*").order("created_at", { ascending: true })
-
-    if (error) {
-      console.error("Error fetching messages:", error)
-      return
-    }
-
-    // Analyze sentiment for each message
-    const messagesWithSentiment = await Promise.all(
-      data.map(async (message) => {
-        return await analyzeSentiment(message)
-      }),
-    )
-
-    setMessages(messagesWithSentiment)
-  }
-
-  const analyzeSentiment = async (message: Message): Promise<Message> => {
-    if (!message.content || message.content.trim().length < 5) {
-      return { ...message, sentiment: "dull" }
-    }
-
-    try {
-      // Direct API call to IBM Watson NLU instead of using a separate API route
-      const response = await fetch(`${IBM_URL}/v1/analyze?version=2022-04-07`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${btoa(`apikey:${IBM_API_KEY}`)}`,
-        },
-        body: JSON.stringify({
-          text: message.content,
-          features: {
-            emotion: {},
-          },
-        }),
-      })
-
-      if (!response.ok) {
-        return { ...message, sentiment: "dull" }
-      }
-
-      const data = await response.json()
-
-      // Determine sentiment based on emotion scores
-      if (data.emotion) {
-        const { joy,  anger,  disgust } = data.emotion.document.emotion
-
-        if (anger > 0.5 || disgust > 0.5) {
-          return { ...message, sentiment: "angry" }
-        } else if (joy > 0.5) {
-          return { ...message, sentiment: "happy" }
+    if (!isUsernameSet) return;
+    
+    const fetchMessages = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('messages')
+          .select('*')
+          .order('created_at', { ascending: true })
+          .limit(50);
+        
+        if (error) {
+          console.error('Error fetching messages:', error);
+          setError('Failed to load messages. Please try again.');
         } else {
-          return { ...message, sentiment: "dull" }
+          setMessages(data as Message[]);
+          setError(null);
         }
+      } catch (err) {
+        console.error('Error in messages fetch:', err);
+        setError('An unexpected error occurred. Please try again.');
+      } finally {
+        setLoading(false);
+        scrollToBottom();
       }
+    };
 
-      return { ...message, sentiment: "dull" }
-    } catch (error) {
-      console.error("Error analyzing sentiment:", error)
-      return { ...message, sentiment: "dull" }
-    }
-  }
+    fetchMessages();
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!newMessage.trim() || !user) return
-
-    const {  error } = await supabase
-      .from("messages")
-      .insert([
-        {
-          content: newMessage,
-          username: user.email.split("@")[0],
-        },
-      ])
-      .select()
-
-    if (error) {
-      console.error("Error sending message:", error)
-      return
-    }
-
-    setNewMessage("")
-  }
-
-  const handleMagicLinkLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-
-    try {
-      // Fix for captcha verification issue - using password reset flow instead
-      // This is a workaround that doesn't require captcha verification
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin,
+    // Subscribe to new messages
+    const subscription = supabase
+      .channel('messages-channel')
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'messages' 
+      }, (payload) => {
+        const newMessage = payload.new as Message;
+        setMessages(prevMessages => [...prevMessages, newMessage]);
+        scrollToBottom();
       })
+      .subscribe();
 
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [isUsernameSet]);
+
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  const handleSendMessage = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    
+    if (!newMessage.trim() || !username) return;
+    
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .insert([{ content: newMessage, username }]);
+      
       if (error) {
-        console.error("Error sending magic link:", error)
-        alert(`Error: ${error.message}. Please try again.`)
+        console.error('Error sending message:', error);
+        setError('Failed to send message. Please try again.');
       } else {
-        alert("Check your email for the login link!")
+        setNewMessage('');
+        setError(null);
       }
-    } catch (error) {
-      console.error("Error:", error)
-      alert("An unexpected error occurred. Please try again.")
-    } finally {
-      setLoading(false)
+    } catch (err) {
+      console.error('Error in send message:', err);
+      setError('An unexpected error occurred. Please try again.');
     }
-  }
+  };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-  }
-
-  const translateMessage = async (message: Message, index: number) => {
-    try {
-      setIsTranslating(message.id)
-
-      const response = await fetch("https://api.sarvam.ai/v1/translate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${SARVAM_API_KEY}`,
-        },
-        body: JSON.stringify({
-          input: message.content,
-          source_language: "english",
-          target_language: selectedLanguage,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Translation failed")
-      }
-
-      const data = await response.json()
-
-      // Update the translated content for this message
-      const updatedMessages = [...messages]
-      updatedMessages[index] = {
-        ...message,
-        translatedContent: data.translated_text,
-      }
-
-      setMessages(updatedMessages)
-      setIsTranslating(null)
-    } catch (error) {
-      console.error("Error translating message:", error)
-      alert("Translation failed. Please try again.")
-      setIsTranslating(null)
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
     }
-  }
+  };
 
-  const getInitials = (username: string) => {
-    if (username.includes("@")) {
-      return username.split("@")[0].substring(0, 2).toUpperCase()
+  const handleSetUsername = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (username.trim()) {
+      localStorage.setItem('chitchat-username', username);
+      setIsUsernameSet(true);
     }
-    return username.substring(0, 2).toUpperCase()
-  }
+  };
 
   const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp)
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-  }
+    try {
+      return format(new Date(timestamp), 'h:mm a');
+    } catch (error) {
+      return 'Invalid time';
+    }
+  };
 
-  if (!user) {
+  if (!isUsernameSet) {
     return (
-      <div className="login-container">
-        <div className="login-card">
-          <div className="login-logo">
-            <Send size={40} />
-            <h1>ChitChat</h1>
-          </div>
-          <p>Sign in with magic link to start chatting</p>
-          <form onSubmit={handleMagicLinkLogin} className="login-form">
+      <div className="username-container">
+        <div className="username-card">
+          <h1>Welcome to Chit-Chat</h1>
+          <p>Choose a username to start chatting</p>
+          
+          <form onSubmit={handleSetUsername} className="username-form">
             <div className="input-group">
-              <label htmlFor="email">Email</label>
+              <User size={18} />
               <input
-                id="email"
-                type="email"
-                placeholder="your.email@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Your username"
+                maxLength={20}
                 required
+                autoFocus
               />
             </div>
-            <button type="submit" disabled={loading} className="login-button">
-              {loading ? "Sending..." : "Send Magic Link"}
+            <button type="submit" className="primary-button">
+              Start Chatting
             </button>
           </form>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="chat-app">
-      <div className="sidebar">
-        <div className="sidebar-header">
-          <div className="app-logo">
-            <MessageSquare />
-            <h1>ChitChat</h1>
-          </div>
-        </div>
-        <div className="sidebar-content">
-          <div className="conversations">
-            <div className="conversation active">
-              <div className="conversation-avatar">
-                <MessageSquare size={18} />
-              </div>
-              <div className="conversation-info">
-                <h3>General Chat</h3>
-                <p>Active now</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="sidebar-footer">
-          <div className="user-profile">
-            <div className="avatar">
-              <User size={18} />
-            </div>
-            <div className="user-info">
-              <h3>{user.email.split("@")[0]}</h3>
-              <p className="user-email">{user.email}</p>
-            </div>
-          </div>
-          <button onClick={handleLogout} className="logout-button">
-            <LogOut size={18} />
-          </button>
+    <div className="chat-container">
+      <div className="chat-header">
+        <h1>Chit-Chat</h1>
+        <div className="username-display">
+          <User size={16} />
+          <span>{username}</span>
         </div>
       </div>
 
-      <div className="chat-container">
-        <div className="chat-header">
-          <div className="chat-info">
-            <h2>General Chat</h2>
-            <p>All team members</p>
+      <div className="messages-container">
+        {loading ? (
+          <div className="loading-state">
+            <RefreshCw size={24} className="spin" />
+            <p>Loading messages...</p>
           </div>
-          <div className="chat-actions">
-            <div className="language-selector">
-              <button className="language-button" onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}>
-                <Translate size={16} />
-                <span>{selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1)}</span>
-                <ChevronDown size={16} />
-              </button>
-              {showLanguageDropdown && (
-                <div className="language-dropdown">
-                  {["hindi", "kannada", "tamil", "telugu", "malayalam", "bengali"].map((lang) => (
-                    <button
-                      key={lang}
-                      className={`language-option ${selectedLanguage === lang ? "active" : ""}`}
-                      onClick={() => {
-                        setSelectedLanguage(lang)
-                        setShowLanguageDropdown(false)
-                      }}
-                    >
-                      {lang.charAt(0).toUpperCase() + lang.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+        ) : messages.length === 0 ? (
+          <div className="empty-state">
+            <p>No messages yet. Be the first to send one!</p>
           </div>
-        </div>
-
-        <div className="messages-area">
-          <div className="messages-container">
-            {messages.map((message, index) => {
-              const isCurrentUser = message.username === user.email.split("@")[0]
+        ) : (
+          <>
+            {messages.map((message) => {
+              const isOwnMessage = message.username === username;
+              
               return (
-                <div key={message.id} className={`message-wrapper ${isCurrentUser ? "outgoing" : "incoming"}`}>
-                  {!isCurrentUser && <div className="message-avatar">{getInitials(message.username)}</div>}
-                  <div className="message-content-wrapper">
-                    {!isCurrentUser && <div className="message-sender">{message.username}</div>}
-                    <div className={`message ${message.sentiment} ${isCurrentUser ? "outgoing" : "incoming"}`}>
-                      <div className="message-text">{message.content}</div>
-                      {message.translatedContent && <div className="translated-text">{message.translatedContent}</div>}
-                      <div className="message-time">{formatTime(message.created_at)}</div>
-                    </div>
-                    <button
-                      className="translate-button"
-                      onClick={() => translateMessage(message, index)}
-                      disabled={isTranslating === message.id}
-                    >
-                      {isTranslating === message.id ? "Translating..." : "Translate"}
-                    </button>
+                <div 
+                  key={message.id} 
+                  className={`message ${isOwnMessage ? 'own-message' : 'other-message'}`}
+                >
+                  {!isOwnMessage && (
+                    <div className="message-username">{message.username}</div>
+                  )}
+                  <div className="message-bubble">
+                    <div className="message-content">{message.content}</div>
+                    <div className="message-time">{formatTime(message.created_at)}</div>
                   </div>
                 </div>
-              )
+              );
             })}
             <div ref={messagesEndRef} />
-          </div>
-        </div>
-
-        <div className="message-input-area">
-          <form onSubmit={handleSendMessage} className="message-form">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type a message..."
-              className="message-input"
-            />
-            <button type="submit" className="send-button" disabled={!newMessage.trim()}>
-              <Send size={18} />
-            </button>
-          </form>
-        </div>
+          </>
+        )}
+        
+        {error && <div className="error-message">{error}</div>}
       </div>
+
+      <form onSubmit={handleSendMessage} className="message-input-container">
+        <input
+          ref={inputRef}
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Type a message..."
+          maxLength={500}
+        />
+        <button 
+          type="submit" 
+          className="send-button"
+          disabled={!newMessage.trim()}
+        >
+          <Send size={20} />
+        </button>
+      </form>
     </div>
-  )
-}
+  );
+};
+
+export default Chat;
