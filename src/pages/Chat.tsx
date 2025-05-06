@@ -20,7 +20,7 @@ const Chat: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange((event,session )=> {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event ,session) => {
       setIsAuthenticated(!!session);
       if (session?.user) {
         setEmail(session.user.email || '');
