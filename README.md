@@ -1,3 +1,3 @@
-# 🗨️ Chit Chat - Simple Messaging App using Supabase
+# 🗨️ Chit-Chat - Simple Messaging App using Supabase
  
  
